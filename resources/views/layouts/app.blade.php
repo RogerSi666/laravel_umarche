@@ -9,22 +9,16 @@
 
         <!-- Fonts -->
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap">
-
-        <!-- Styles -->
+-       <!-- Styles -->
         <link rel="stylesheet" href="{{ asset('css/app.css') }}">
 
         <!-- Scripts -->
         <script src="{{ asset('js/app.js') }}" defer></script>
+        <!-- Scripts -->
     </head>
     <body class="font-sans antialiased">
         <div class="min-h-screen bg-gray-100">
-            @if(request()->is('admin*'))
-                @include('layouts.admin-navigation')
-            @elseif(request()->is('owner*'))
-                @include('layouts.owner-navigation')
-            @else
-                @include('layouts.user-navigation')
-            @endif
+            @include('layouts.navigation')
 
             <!-- Page Heading -->
             <header class="bg-white shadow">
