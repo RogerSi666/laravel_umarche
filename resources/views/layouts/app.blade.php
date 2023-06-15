@@ -19,9 +19,9 @@
     <body class="font-sans antialiased">
         <div class="min-h-screen bg-gray-100">
             @if(auth('admin')->user())
-                @inclue('layouts.admin-navigation')
+                @include('layouts.admin-navigation')
              @elseif(auth('owners')->user())
-                    @inclue('layouts.owner-navigation')
+                    @include('layouts.owner-navigation')
              @elseif(auth('users')->user())
 
                 @include('layouts.user-navigation')
