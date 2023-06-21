@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use App\Models\Owner;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Hash;
+
 
 class OwnersController extends Controller
 {
@@ -40,7 +42,7 @@ class OwnersController extends Controller
 
         // dd($e_all, $q_get, $q_first, $c_test);
         $owners = Owner::select('id', 'name', 'email', 'created_at')
-        ->paginate(3);
+        ->paginate(8);
 
         return view('admin.owners.index', compact('owners'));
     }
@@ -63,7 +65,19 @@ class OwnersController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:owners',
+            'password' => 'required|string|confirmed|min:8',
+        ]);
+        Owner::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+        ]);
+        return redirect()
+        ->route('admin.owners.index')
+        ->with('message','オーナー登録を実施しました。');
     }
 
     /**
