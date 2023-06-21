@@ -8,7 +8,7 @@ use App\Http\Controllers\Admin\Auth\NewPasswordController;
 use App\Http\Controllers\Admin\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Admin\Auth\RegisteredUserController;
 use App\Http\Controllers\Admin\Auth\VerifyEmailController;
-use App\Http\Controllers\Admin\OwnersConroller;
+use App\Http\Controllers\Admin\OwnersController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -26,7 +26,7 @@ use Illuminate\Support\Facades\Route;
 //     return view('admin.welcome');
 // });
 
-Route::resource('owners', OwnersConroller::class)
+Route::resource('owners', OwnersController::class)
 ->middleware('auth:admin')->except(['show']);
 
 

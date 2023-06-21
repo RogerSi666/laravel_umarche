@@ -8,7 +8,7 @@ use App\Models\Owner;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 
-class OwnersConroller extends Controller
+class OwnersController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -23,18 +23,26 @@ class OwnersConroller extends Controller
     
     public function index()
     {
-        $date_now = Carbon::now();
-        $date_parse = Carbon::parse(now());
-        echo $date_now;
-        echo $date_parse;
-       $e_all = Owner::all();
-       $q_get = DB::table('owners')->select('name', 'created_at')->get();
-       //$q_first = DB::table('owners')->select('name')->first();
-       //$c_text = collect([
-       // 'name' => 'ですと'
-       //]);
-       //dd($e_all, $q_get, $q_first, $c_text);
-       return view('admin.owners.index', compact('e_all','q_get'));
+      // $date_now = Carbon::now();
+        // $date_parse = Carbon::parse(now());
+        // echo $date_now->year;
+        // echo $date_parse;
+
+        // $e_all = Owner::all();
+        // $q_get = DB::table('owners')->select('name', 'created_at')->get();
+        // $q_first = DB::table('owners')->select('name')->first();
+
+        // $c_test = collect([
+        //     'name' => 'てすと'
+        // ]);
+
+        // var_dump($q_first);
+
+        // dd($e_all, $q_get, $q_first, $c_test);
+        $owners = Owner::select('id', 'name', 'email', 'created_at')
+        ->paginate(3);
+
+        return view('admin.owners.index', compact('owners'));
     }
 
     /**
@@ -44,7 +52,7 @@ class OwnersConroller extends Controller
      */
     public function create()
     {
-        //
+        return view('admin.owners.create');
     }
 
     /**
