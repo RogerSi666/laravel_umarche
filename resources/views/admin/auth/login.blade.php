@@ -1,11 +1,11 @@
 <x-guest-layout>
     <x-auth-card>
-    管理者用
+        管理者用
         <x-slot name="logo">
             <div class="w-28">
-            <a href="/">
-                <x-application-logo class="w-20 h-20 fill-current text-gray-500" />
-            </a>
+                <a href="/">  
+                    <x-application-logo class="w-20 h-20 fill-current text-gray-500" />
+                </a>
             </div>
         </x-slot>
 
@@ -19,6 +19,11 @@
             @csrf
 
             <!-- Email Address -->
+            <div>
+                <label for="email">Email</label>
+            
+                <input id="email" class="block mt-1 w-full" type="email" name="email" value="" required autofocus />
+            </div>
             <div>
                 <x-label for="email" :value="__('Email')" />
 
