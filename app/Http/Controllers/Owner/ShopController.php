@@ -17,7 +17,11 @@ class ShopController extends Controller
     public function __construct()
     {
         $this->middleware('auth:owners');
+
         $this->middleware(function ($request, $next) {
+            // dd($request->route()->parameter('shop')); //文字列
+            // dd(Auth::id()); //数字
+
             $id = $request->route()->parameter('shop'); //shopのid取得
             if(!is_null($id)){ // null判定
             $shopsOwnerId = Shop::findOrFail($id)->owner->id;
@@ -33,10 +37,11 @@ class ShopController extends Controller
 
     public function index()
     {
-        //$ownerId = Auth::id();
-        $shops = Shop::where('owner_id', Auth::id())->get();
-        return view('owner.shops.index',
-        compact('shops'));
+         //$ownerId = Auth::id();
+         $shops = Shop::where('owner_id', Auth::id())->get();
+
+         return view('owner.shops.index', 
+         compact('shops'));
     }
 
     public function edit($id)
@@ -48,14 +53,10 @@ class ShopController extends Controller
     public function update(UploadImageRequest $request, $id)
     {
         $imageFile = $request->image;
-        if(!is_null($imageFile) && $imageFile->isValid()) {
-            //Storage::putFile('public/shops', $imageFile);
-            $fileName = uniqid(rand().'_');
-            $extension = $imageFile->extension();  
-            $fileNameToStore = $fileName. '.' . $extension;         
-            $resizedImage = InterventionImage::make($imageFile)->resize(1920, 1080)->encode();
-            Storage::put('public/shops/' . $fileNameToStore, $resizedImage);
+        if(!is_null($imageFile) && $imageFile->isValid() ){
+            $fileNameToStore = ImageService::upload($imageFile, 'shops');    
         }
+
         return redirect()->route('owner.shops.index');
     }
     
