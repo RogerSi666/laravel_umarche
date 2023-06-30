@@ -15,18 +15,18 @@ class CreateCategoriesTable extends Migration
     {
         Schema::create('primary_categories', function (Blueprint $table) {
             $table->id();
-            $table->timestamps();
             $table->string('name');
             $table->integer('sort_order');
+            $table->timestamps();
         });
 
         Schema::create('secondary_categories', function (Blueprint $table) {
             $table->id();
-            $table->timestamps();
-            $table->foreignId('primary_category_id')
-            ->constrained();
             $table->string('name');
             $table->integer('sort_order');
+            $table->foreignId('primary_category_id')
+            ->constrained();
+            $table->timestamps();
         });
     }
 
