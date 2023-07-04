@@ -18,6 +18,7 @@
                             <select name="category">
                                 @foreach($categories as $category)
                                 <optgroup label="{{ $category->name }}">
+                                    @foreach($category->secondary as $secondary)
                                     <option value="{{ $secondary->id }}">
                                         {{ $secondary->name }}
                                     </option>

@@ -59,7 +59,7 @@ class ProductController extends Controller
 
 
 
-        return view('owner.images.create',
+        return view('owner.products.create',
             compact('shops', 'images', 'categories'));
     }
     /**
