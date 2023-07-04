@@ -4,17 +4,37 @@ namespace App\Http\Controllers\Owner;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\Image;
+use App\Models\Proudct;
+use App\Models\Owner;
+use App\Models\SecondaryCategory;
+use Illuminate\Support\Facades\Auth;
 
 class ProductController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    public function __construct()
+    {
+        $this->middleware('auth:owners');
+
+        $this->middleware(function ($request, $next) {
+
+            $id = $request->route()->parameter('product'); 
+            if(!is_null($id)){ 
+            $productOwnerId = Product::findOrFail($id)->shop->owner->id;
+                $productId = (int)$iproductsId; 
+                if($productId !== Auth::id()){ 
+                    abort(404);
+                }
+            }
+            return $next($request);
+        });
+    } 
     public function index()
     {
-        //
+        $products = Owner::findOrFail(Auth::id())->shop->product;
+        
+         return view('owner.products.index', 
+         compact('products'));
     }
 
     /**
@@ -24,18 +44,31 @@ class ProductController extends Controller
      */
     public function create()
     {
-        //
+        return view('owner.images.create');
     }
-
     /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(UploadImageRequest $request)
     {
-        //
+        $imageFiles = $request->file('files');
+        if(!is_null($imageFiles)){
+            foreach($imageFiles as $imageFile){
+                $fileNameToStore = ImageService::upload($imageFile, 'products');
+                Image::create([
+                    'owner_id' => Auth::id(),
+                    'filename' => $fileNameToStore
+                ]);
+            }
+
+        }
+        return redirect()
+        ->route('owner.images.index')
+        ->with(['message' => '画像登録を実施しました。',
+        'status' => 'info']);
     }
 
     /**
@@ -57,7 +90,8 @@ class ProductController extends Controller
      */
     public function edit($id)
     {
-        //
+        $image = Image::findOrFail($id);
+        return view('owner.images.edit', compact('image'));
     }
 
     /**
@@ -69,7 +103,18 @@ class ProductController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $request->validate([
+            'title' => 'string|max:50'
+        ]);
+
+        $image = Image::findOrFail($id);
+        $image->title = $request->title;
+        $image->save();
+
+        return redirect()
+        ->route('owner.images.index')
+        ->with(['message' => '画像情報を更新しました。',
+        'status' => 'info']);
     }
 
     /**
@@ -80,6 +125,19 @@ class ProductController extends Controller
      */
     public function destroy($id)
     {
-        //
+        
+        $image = Image::findOrFail($id);
+        $filePath = 'public/products/' . $image->filename;
+        if(Storage::exists($filePath)){
+            Storage::delete($filePath);
+        }
+
+        Image::findOrFail($id)->delete();
+
+        return redirect()
+        ->route('owner.images.index')
+        ->with(['message' => '画像を削除しました。',
+        'status' => 'alert']);
     }
+
 }
